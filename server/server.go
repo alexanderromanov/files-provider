@@ -78,10 +78,19 @@ func (server *fileServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", mimeType)
 
-	_, err = io.Copy(w, file)
+	written, err := io.Copy(w, file)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		log.Printf("error while copying: %v\n", err)
+		// broken pipe errors are pretty common and are not errors in a sense where
+		// we can fix anything, so it's better to filter them out from logs
+		if !strings.HasSuffix(err.Error(), "broken pipe") {
+			log.Printf("error while copying: %v\n", err)
+		}
+
+		// if any number of byte were written to response 200 status is automatically set
+		// calling WriteHeader would cause http error
+		if written == 0 {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 		return
 	}
 }
