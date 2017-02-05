@@ -1,11 +1,8 @@
-FROM golang:alpine
+FROM alpine
 
-RUN mkdir -p /go/src/github.com/alexanderromanov/files-provider
+RUN apk add --no-cache ca-certificates openssl
+ADD files-provider /
 
-ADD . /go/src/github.com/alexanderromanov/files-provider
-
-RUN go install github.com/alexanderromanov/files-provider
-
-ENTRYPOINT /go/bin/files-provider
+ENTRYPOINT /files-provider
 
 EXPOSE 8000

@@ -27,5 +27,3 @@ _testmain.go
 *.exe
 *.test
 *.prof
-files-provider
-config.toml
