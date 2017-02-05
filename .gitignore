@@ -26,3 +26,4 @@ _testmain.go
 config.toml
 files-provider
 build-container.sh
+upload-to-servers.sh
